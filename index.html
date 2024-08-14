@@ -105,7 +105,7 @@
         }
 
         .score-report h3 {
-            font-size: 1.8em;
+            font-size: 2em;
             margin-bottom: 10px;
         }
 
@@ -119,6 +119,7 @@
             padding: 15px;
             border-radius: 10px;
             margin-top: 20px;
+            text-align: left;
         }
 
         footer {
@@ -232,85 +233,85 @@
         ];
 
         let currentQuestion = 0;
-        let correctAnswers = 0;
-        let incorrectClicks = [];
+        let score = 0;
 
         function checkAnswer(option) {
             const feedback = document.getElementById('feedback');
-            const questionData = questions[currentQuestion];
-            if (!incorrectClicks[currentQuestion]) {
-                incorrectClicks[currentQuestion] = 0;
+            if (option === questions[currentQuestion].correct) {
+                feedback.textContent = "תשובה נכונה!";
+                feedback.style.color = "green";
+                score++;
+                if (currentQuestion === questions.length - 1) {
+                    generateScoreReport();
+                }
+            } else {
+                feedback.textContent = "תשובה שגויה!";
+                feedback.style.color = "red";
             }
 
-            if (option === questionData.correct) {
-                feedback.style.color = '#43a047';
-                feedback.innerText = 'תשובה נכונה!';
-                correctAnswers++;
-                showConfetti();
-                setTimeout(nextQuestion, 1500);
-            } else {
-                feedback.style.color = '#e53935';
-                feedback.innerText = 'תשובה לא נכונה!';
-                incorrectClicks[currentQuestion]++;
-            }
-            feedback.style.display = 'block';
+            feedback.style.display = "block";
+            setTimeout(nextQuestion, 1000);
         }
 
         function nextQuestion() {
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = "none";
             currentQuestion++;
             if (currentQuestion < questions.length) {
                 displayQuestion();
             } else {
-                showScoreReport();
+                endQuiz();
             }
         }
 
         function displayQuestion() {
-            const questionData = questions[currentQuestion];
-            document.getElementById('question').innerText = questionData.question;
-            const buttons = document.querySelectorAll('.options button');
-            buttons.forEach((button, index) => {
-                button.innerText = questionData.options[index];
+            const question = document.getElementById('question');
+            question.textContent = questions[currentQuestion].question;
+            const options = document.querySelectorAll('.options button');
+            options.forEach((button, index) => {
+                button.textContent = questions[currentQuestion].options[index];
             });
-            document.getElementById('feedback').style.display = 'none';
         }
 
-        function showScoreReport() {
-            const scoreReport = document.getElementById('score-report');
-            scoreReport.innerHTML = `
+        function generateScoreReport() {
+            const report = document.getElementById('score-report');
+            report.innerHTML = `
                 <h3>דוח ציונים</h3>
-                <p>תשובות נכונות: ${correctAnswers} מתוך ${questions.length}</p>
-                <p>סה"כ לחיצות על תשובות לא נכונות: ${incorrectClicks.reduce((acc, curr) => acc + curr, 0)}</p>
+                <p>שאלות נכונות: ${score} מתוך ${questions.length}</p>
                 <div class="summary">
-                    <h4>פירוט לכל שאלה:</h4>
-                    ${questions.map((q, index) => `
-                        <p><strong>שאלה ${index + 1}: ${q.question}</strong><br>
-                        מספר לחיצות על תשובות לא נכונות: ${incorrectClicks[index] || 0}</p>
-                    `).join('')}
+                    <h4>סיכום:</h4>
+                    <p>סיימת את כל החידות בהצלחה!</p>
+                    <p>הממוצע שלך היה ${Math.round((score / questions.length) * 100)}%.</p>
                 </div>
             `;
-            scoreReport.style.display = 'block';
+            report.style.display = "block";
+            triggerConfetti();
         }
 
-        function showConfetti() {
-            const confetti = document.getElementById('confetti');
-            confetti.innerHTML = '';
+        function endQuiz() {
+            const questionContainer = document.querySelector('.quiz-container');
+            questionContainer.style.display = "none";
+            generateScoreReport();
+        }
+
+        function triggerConfetti() {
+            const confettiContainer = document.getElementById('confetti');
             for (let i = 0; i < 100; i++) {
-                const div = document.createElement('div');
-                div.className = 'confetti-piece';
-                div.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                div.style.left = `${Math.random() * 100}%`;
-                div.style.animationDuration = `${Math.random() * 3 + 2}s`;
-                confetti.appendChild(div);
+                const confettiPiece = document.createElement('div');
+                confettiPiece.classList.add('confetti-piece');
+                confettiPiece.style.backgroundColor = randomColor();
+                confettiPiece.style.left = `${Math.random() * 100}vw`;
+                confettiPiece.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                confettiContainer.appendChild(confettiPiece);
             }
-            confetti.style.display = 'block';
-            setTimeout(() => {
-                confetti.style.display = 'none';
-            }, 2000);
+        }
+
+        function randomColor() {
+            const colors = ['#ff6f61', '#6b5b95', '#88b04b', '#f7cac9', '#92a8d1'];
+            return colors[Math.floor(Math.random() * colors.length)];
         }
 
         displayQuestion();
     </script>
 </body>
 </html>
-
