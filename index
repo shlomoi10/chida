@@ -1,1 +1,316 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חידונים מרתקים</title>
+    <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f3e9;
+            color: #5e35b1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            direction: rtl;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-family: 'Alef', sans-serif;
+            font-size: 3em;
+            margin: 0;
+            color: #4527a0;
+        }
+
+        svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+
+        .quiz-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .quiz-container h2 {
+            font-family: 'Alef', sans-serif;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #3e2723;
+        }
+
+        .question {
+            font-family: 'Rubik', sans-serif;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #3e2723;
+        }
+
+        .options button {
+            font-family: 'Rubik', sans-serif;
+            background-color: #7e57c2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .options button:hover {
+            background-color: #5e35b1;
+        }
+
+        .feedback {
+            font-family: 'Rubik', sans-serif;
+            font-size: 1.2em;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .score-report {
+            display: none;
+            text-align: center;
+            font-family: 'Alef', sans-serif;
+            font-size: 1.5em;
+            margin-top: 20px;
+            color: #4527a0;
+        }
+
+        .score-report h3 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .score-report p {
+            font-size: 1.2em;
+            margin: 5px 0;
+        }
+
+        .score-report .summary {
+            background-color: #e0f7fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-family: 'Alef', sans-serif;
+            font-size: 0.9em;
+            color: #311b92;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: 0;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#5e35b1">
+            <path d="M20.84 22.73l-2.12-2.12-2.12 2.12a1.5 1.5 0 01-2.12-2.12l2.12-2.12-2.12-2.12a1.5 1.5 0 012.12-2.12l2.12 2.12 2.12-2.12a1.5 1.5 0 012.12 2.12l-2.12 2.12 2.12 2.12a1.5 1.5 0 01-2.12 2.12zM5.16 1.27l2.12 2.12-2.12 2.12a1.5 1.5 0 002.12 2.12l2.12-2.12 2.12 2.12a1.5 1.5 0 102.12-2.12l-2.12-2.12 2.12-2.12a1.5 1.5 0 10-2.12-2.12l-2.12 2.12-2.12-2.12a1.5 1.5 0 00-2.12 2.12z"/>
+        </svg>
+        <h1>חידונים מרתקים</h1>
+    </header>
+
+    <div class="quiz-container">
+        <h2>מוכנים לאתגר?</h2>
+        <div class="question" id="question">
+            מהו המספר הבא בסדרה: 2, 4, 8, 16, ___?
+        </div>
+        <div class="options">
+            <button onclick="checkAnswer(1)">20</button>
+            <button onclick="checkAnswer(2)">32</button>
+            <button onclick="checkAnswer(3)">30</button>
+            <button onclick="checkAnswer(4)">24</button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+        <div class="score-report" id="score-report"></div>
+    </div>
+
+    <div id="confetti" class="confetti"></div>
+
+    <footer>
+        <p>© 2024 כל הזכויות שמורות. חידונים מרתקים.</p>
+    </footer>
+
+    <script>
+        const questions = [
+            {
+                question: "מהו המספר הבא בסדרה: 2, 4, 8, 16, ___?",
+                options: ["20", "32", "30", "24"],
+                correct: 2
+            },
+            {
+                question: "כמה צדדים יש למשושה?",
+                options: ["4", "5", "6", "8"],
+                correct: 3
+            },
+            {
+                question: "מי המציא את נורת החשמל?",
+                options: ["אדיסון", "ניקולה טסלה", "ג'יימס ווט", "אלברט איינשטיין"],
+                correct: 1
+            },
+            {
+                question: "באיזו מדינה נמצא מגדל אייפל?",
+                options: ["גרמניה", "ספרד", "צרפת", "איטליה"],
+                correct: 3
+            },
+            {
+                question: "איזה כוכב לכת ידוע בכינוי 'הכוכב האדום'?",
+                options: ["מאדים", "ונוס", "שבתאי", "צדק"],
+                correct: 1
+            },
+            {
+                question: "מהו היסוד הנפוץ ביותר ביקום?",
+                options: ["חמצן", "פחמן", "מימן", "הליום"],
+                correct: 3
+            },
+            {
+                question: "כמה שעות יש ביממה?",
+                options: ["12", "24", "48", "60"],
+                correct: 2
+            },
+            {
+                question: "איזה צבע יש לדובוני הגומי בטעם תות?",
+                options: ["אדום", "ירוק", "צהוב", "כחול"],
+                correct: 1
+            },
+            {
+                question: "באיזו שנה נחתו בני האדם לראשונה על הירח?",
+                options: ["1965", "1969", "1972", "1980"],
+                correct: 2
+            },
+            {
+                question: "מהי המדינה הגדולה ביותר בעולם מבחינת שטח?",
+                options: ["קנדה", "סין", "ארה\"ב", "רוסיה"],
+                correct: 4
+            }
+        ];
+
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let incorrectClicks = [];
+
+        function checkAnswer(option) {
+            const feedback = document.getElementById('feedback');
+            const questionData = questions[currentQuestion];
+            if (!incorrectClicks[currentQuestion]) {
+                incorrectClicks[currentQuestion] = 0;
+            }
+
+            if (option === questionData.correct) {
+                feedback.style.color = '#43a047';
+                feedback.innerText = 'תשובה נכונה!';
+                correctAnswers++;
+                showConfetti();
+                setTimeout(nextQuestion, 1500);
+            } else {
+                feedback.style.color = '#e53935';
+                feedback.innerText = 'תשובה לא נכונה!';
+                incorrectClicks[currentQuestion]++;
+            }
+            feedback.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                displayQuestion();
+            } else {
+                showScoreReport();
+            }
+        }
+
+        function displayQuestion() {
+            const questionData = questions[currentQuestion];
+            document.getElementById('question').innerText = questionData.question;
+            const buttons = document.querySelectorAll('.options button');
+            buttons.forEach((button, index) => {
+                button.innerText = questionData.options[index];
+            });
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function showScoreReport() {
+            const scoreReport = document.getElementById('score-report');
+            scoreReport.innerHTML = `
+                <h3>דוח ציונים</h3>
+                <p>תשובות נכונות: ${correctAnswers} מתוך ${questions.length}</p>
+                <p>סה"כ לחיצות על תשובות לא נכונות: ${incorrectClicks.reduce((acc, curr) => acc + curr, 0)}</p>
+                <div class="summary">
+                    <h4>פירוט לכל שאלה:</h4>
+                    ${questions.map((q, index) => `
+                        <p><strong>שאלה ${index + 1}: ${q.question}</strong><br>
+                        מספר לחיצות על תשובות לא נכונות: ${incorrectClicks[index] || 0}</p>
+                    `).join('')}
+                </div>
+            `;
+            scoreReport.style.display = 'block';
+        }
+
+        function showConfetti() {
+            const confetti = document.getElementById('confetti');
+            confetti.innerHTML = '';
+            for (let i = 0; i < 100; i++) {
+                const div = document.createElement('div');
+                div.className = 'confetti-piece';
+                div.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                div.style.left = `${Math.random() * 100}%`;
+                div.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                confetti.appendChild(div);
+            }
+            confetti.style.display = 'block';
+            setTimeout(() => {
+                confetti.style.display = 'none';
+            }, 2000);
+        }
+
+        displayQuestion();
+    </script>
+</body>
+</html>
 
