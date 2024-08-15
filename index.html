@@ -62,6 +62,30 @@
             justify-content: center;
             margin-bottom: 15px;
         }
+            .button-group button.selected {
+                background-color: #4527a0;
+                box-shadow: 0 0 5px #7e57c2;
+            }
+
+        #start-quiz {
+            background-color: #4527a0;
+            color: white;
+            font-size: 1.2em;
+            padding: 15px 30px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+            #start-quiz:hover {
+                background-color: #45a049;
+                transform: scale(1.05);
+            }
+
+            #start-quiz:disabled {
+                background-color: #cccccc;
+                color: #666666;
+                cursor: not-allowed;
+            }
 
             .button-group button {
                 font-family: 'Rubik', sans-serif;
@@ -72,13 +96,18 @@
                 padding: 10px 20px;
                 margin: 5px;
                 cursor: pointer;
-                transition: background-color 0.3s;
+                transition: background-color 0.3s, transform 0.1s;
                 flex-grow: 1;
                 flex-basis: 45%;
             }
 
                 .button-group button:hover {
                     background-color: #5e35b1;
+                }
+                .button-group button.selected {
+                    background-color: #4527a0;
+                    transform: scale(1.05);
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
                 }
 
         .options button {
@@ -153,6 +182,26 @@
             footer p {
                 margin: 0;
             }
+        #start-quiz {
+            font-family: 'Rubik', sans-serif;
+            font-size: 1.2em;
+            background-color: #4527a0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 30px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+            #start-quiz:hover {
+                background-color: #45a049;
+            }
+
+            #start-quiz:active {
+                transform: scale(0.98);
+            }
     </style>
 </head>
 <body>
@@ -163,7 +212,7 @@
     <div class="setup-container">
         <h2>ברוכים הבאים לחידון המשפחתי!</h2>
         <p>בחרו את מספר השאלות ואת רמת הקושי:</p>
-        <div class="button-group">
+        <div class="button-group" id="num-questions-group">
             <button onclick="setNumQuestions(5)">5 שאלות</button>
             <button onclick="setNumQuestions(10)">10 שאלות</button>
             <button onclick="setNumQuestions(15)">15 שאלות</button>
@@ -176,9 +225,9 @@
             <button onclick="setDifficulty('all')">כל הרמות</button>
         </div>
         <label for="player-names">שמות השחקנים (מופרדים בפסיק):</label>
-        <input type="text" id="player-names" placeholder="הכנס שמות...">
+        <input type="text" id="player-names" placeholder="הכנס שמות..." style="font-family: 'Rubik', sans-serif;">
         <br><br>
-        <button onclick="startQuiz()">התחל חידון</button>
+            <button id="start-quiz" onclick="startQuiz()" disabled>התחל חידון</button>
     </div>
 
     <div class="quiz-container" style="display: none;">
@@ -251,36 +300,36 @@
             { question: "מהי השנה היהודית בה התרחש חורבן בית המקדש השני?", options: ["70 לספירה", "120 לספירה", "586 לפנה\"ס", "3338 לבריאת העולם"], correct: 1, difficulty: "hard" },
             { question: "באיזו שנה עברו בני ישראל את הירדן ונכנסו לארץ ישראל?", options: ["2488 לבריאת העולם", "2408 לבריאת העולם", "2448 לבריאת העולם", "2508 לבריאת העולם"], correct: 3, difficulty: "medium" },
             { question: "כמה פעמים מוזכר השם 'משה' בתורה?", options: ["720", "540", "740", "600"], correct: 2, difficulty: "hard" },
-                { question: "מהו העץ הגבוה ביותר בעולם?", options: ["אורן", "דקל", "סקויה", "ארז"], correct: 3, difficulty: "medium" },
-                { question: "איזה יונק נחשב לגדול ביותר בעולם?", options: ["פיל אפריקאי", "לווייתן כחול", "גורילה", "קרנף"], correct: 2, difficulty: "easy" },
-                { question: "מהו הסמל הלאומי של מדינת ישראל?", options: ["מנורה", "מגן דוד", "צבר", "תל אביב"], correct: 1, difficulty: "easy" },
-                { question: "מי היה ראש ממשלת ישראל הראשון?", options: ["דוד בן-גוריון", "גולדה מאיר", "מנחם בגין", "יצחק רבין"], correct: 1, difficulty: "easy" },
-                { question: "איזו עיר נחשבת לעיר הקודש?", options: ["תל אביב", "ירושלים", "חברון", "צפת"], correct: 2, difficulty: "easy" },
-                { question: "מהי השנה בה ניתנה התורה בהר סיני?", options: ["2448 לבריאת העולם", "2508 לבריאת העולם", "1948 לבריאת העולם", "4000 לבריאת העולם"], correct: 1, difficulty: "medium" },
-                { question: "איזה סוג של עץ מייצר בלוטים?", options: ["אלון", "ארז", "ברוש", "זית"], correct: 1, difficulty: "easy" },
-                { question: "מהו שמה של העיר העתיקה של יבוס?", options: ["בית לחם", "חברון", "שכם", "ירושלים"], correct: 4, difficulty: "hard" },
-                { question: "באיזו שנה הוקמה מדינת ישראל?", options: ["1948", "1956", "1967", "1973"], correct: 1, difficulty: "easy" },
-                { question: "איזה סוג של עץ נחשב לקדוש ביהדות?", options: ["אלון", "זית", "תמר", "ברוש"], correct: 2, difficulty: "medium" },
-                { question: "מהו הים העמוק ביותר בעולם?", options: ["הים התיכון", "ים המלח", "הים האדום", "הים הקריבי"], correct: 2, difficulty: "medium" },
-                { question: "מי היה השליט הישראלי שהקים את בית המקדש הראשון?", options: ["דוד המלך", "שלמה המלך", "שאול המלך", "יהושע בן נון"], correct: 2, difficulty: "medium" },
-                { question: "איזה גוף מים נחשב לגדול ביותר בשטח?", options: ["הים התיכון", "הים השחור", "האוקיינוס השקט", "האגם הגדול"], correct: 3, difficulty: "easy" },
-                { question: "כמה רגליים יש לעכביש?", options: ["שש", "שמונה", "עשר", "שבע"], correct: 2, difficulty: "easy" },
-                { question: "מהי האבן היקרה ביותר?", options: ["יהלום", "אודם", "ברקת", "ספיר"], correct: 1, difficulty: "medium" },
-                { question: "איזה סוג של עץ מייצר פירות הדר?", options: ["לימון", "תפוז", "אשכולית", "כל התשובות נכונות"], correct: 4, difficulty: "easy" },
-                { question: "מהו המקום החם ביותר בכדור הארץ?", options: ["מדבר סהרה", "עמק המוות", "המדבר האוסטרלי", "אפריקה"], correct: 2, difficulty: "hard" },
-                { question: "מהו מקורו של נהר הנילוס?", options: ["אגם ויקטוריה", "הים התיכון", "אגם צ'אד", "הרי אתיופיה"], correct: 1, difficulty: "medium" },
-                { question: "באיזו שנה נבנה הכותל המערבי?", options: ["70 לספירה", "150 לספירה", "586 לפנה\"ס", "335 לפנה\"ס"], correct: 1, difficulty: "hard" },
-                { question: "איזה סוג של חיה הוא הדולפין?", options: ["יונק", "דג", "זוחל", "דו-חיים"], correct: 1, difficulty: "easy" },
-                { question: "מהו גובהו של הר החרמון?", options: ["2224 מטר", "2814 מטר", "1208 מטר", "1965 מטר"], correct: 1, difficulty: "medium" },
-                { question: "איזה עץ מופיע במשל יותם?", options: ["זית", "אשל", "ארז", "תאנה"], correct: 1, difficulty: "medium" },
-                { question: "איזה סוג של חרק יוצר דבש?", options: ["דבורה", "צרצר", "חגב", "פרפר"], correct: 1, difficulty: "easy" },
-                { question: "מהי בריאת העולם על פי לוח השנה היהודי?", options: ["ה' באלול", "כ\"ה באלול", "ראש השנה", "סוכות"], correct: 2, difficulty: "hard" },
-                { question: "איזה נהר מפריד בין אסיה לאירופה?", options: ["הדנובה", "הוולגה", "הפרת", "האורל"], correct: 4, difficulty: "medium" },
-                { question: "מהי הציפור הלאומית של ישראל?", options: ["נשר", "דוכיפת", "בז", "אנפה"], correct: 2, difficulty: "easy" },
-                { question: "כמה עונות יש בשנה?", options: ["שלוש", "ארבע", "שתיים", "חמש"], correct: 2, difficulty: "easy" },
-                { question: "מהו תאריך יום השואה?", options: ["כ\"ז בניסן", "י\"ד באייר", "י\"ב בתמוז", "ט\"ו באב"], correct: 1, difficulty: "medium" },
-                { question: "באיזו שנה התרחש מבצע אנטבה?", options: ["1976", "1982", "1973", "1967"], correct: 1, difficulty: "medium" }
-            
+            { question: "מהו העץ הגבוה ביותר בעולם?", options: ["אורן", "דקל", "סקויה", "ארז"], correct: 3, difficulty: "medium" },
+            { question: "איזה יונק נחשב לגדול ביותר בעולם?", options: ["פיל אפריקאי", "לווייתן כחול", "גורילה", "קרנף"], correct: 2, difficulty: "easy" },
+            { question: "מהו הסמל הלאומי של מדינת ישראל?", options: ["מנורה", "מגן דוד", "צבר", "תל אביב"], correct: 1, difficulty: "easy" },
+            { question: "מי היה ראש ממשלת ישראל הראשון?", options: ["דוד בן-גוריון", "גולדה מאיר", "מנחם בגין", "יצחק רבין"], correct: 1, difficulty: "easy" },
+            { question: "איזו עיר נחשבת לעיר הקודש?", options: ["תל אביב", "ירושלים", "חברון", "צפת"], correct: 2, difficulty: "easy" },
+            { question: "מהי השנה בה ניתנה התורה בהר סיני?", options: ["2448 לבריאת העולם", "2508 לבריאת העולם", "1948 לבריאת העולם", "4000 לבריאת העולם"], correct: 1, difficulty: "medium" },
+            { question: "איזה סוג של עץ מייצר בלוטים?", options: ["אלון", "ארז", "ברוש", "זית"], correct: 1, difficulty: "easy" },
+            { question: "מהו שמה של העיר העתיקה של יבוס?", options: ["בית לחם", "חברון", "שכם", "ירושלים"], correct: 4, difficulty: "hard" },
+            { question: "באיזו שנה הוקמה מדינת ישראל?", options: ["1948", "1956", "1967", "1973"], correct: 1, difficulty: "easy" },
+            { question: "איזה סוג של עץ נחשב לקדוש ביהדות?", options: ["אלון", "זית", "תמר", "ברוש"], correct: 2, difficulty: "medium" },
+            { question: "מהו הים העמוק ביותר בעולם?", options: ["הים התיכון", "ים המלח", "הים האדום", "הים הקריבי"], correct: 2, difficulty: "medium" },
+            { question: "מי היה השליט הישראלי שהקים את בית המקדש הראשון?", options: ["דוד המלך", "שלמה המלך", "שאול המלך", "יהושע בן נון"], correct: 2, difficulty: "medium" },
+            { question: "איזה גוף מים נחשב לגדול ביותר בשטח?", options: ["הים התיכון", "הים השחור", "האוקיינוס השקט", "האגם הגדול"], correct: 3, difficulty: "easy" },
+            { question: "כמה רגליים יש לעכביש?", options: ["שש", "שמונה", "עשר", "שבע"], correct: 2, difficulty: "easy" },
+            { question: "מהי האבן היקרה ביותר?", options: ["יהלום", "אודם", "ברקת", "ספיר"], correct: 1, difficulty: "medium" },
+            { question: "איזה סוג של עץ מייצר פירות הדר?", options: ["לימון", "תפוז", "אשכולית", "כל התשובות נכונות"], correct: 4, difficulty: "easy" },
+            { question: "מהו המקום החם ביותר בכדור הארץ?", options: ["מדבר סהרה", "עמק המוות", "המדבר האוסטרלי", "אפריקה"], correct: 2, difficulty: "hard" },
+            { question: "מהו מקורו של נהר הנילוס?", options: ["אגם ויקטוריה", "הים התיכון", "אגם צ'אד", "הרי אתיופיה"], correct: 1, difficulty: "medium" },
+            { question: "באיזו שנה נבנה הכותל המערבי?", options: ["70 לספירה", "150 לספירה", "586 לפנה\"ס", "335 לפנה\"ס"], correct: 1, difficulty: "hard" },
+            { question: "איזה סוג של חיה הוא הדולפין?", options: ["יונק", "דג", "זוחל", "דו-חיים"], correct: 1, difficulty: "easy" },
+            { question: "מהו גובהו של הר החרמון?", options: ["2224 מטר", "2814 מטר", "1208 מטר", "1965 מטר"], correct: 1, difficulty: "medium" },
+            { question: "איזה עץ מופיע במשל יותם?", options: ["זית", "אשל", "ארז", "תאנה"], correct: 1, difficulty: "medium" },
+            { question: "איזה סוג של חרק יוצר דבש?", options: ["דבורה", "צרצר", "חגב", "פרפר"], correct: 1, difficulty: "easy" },
+            { question: "מהי בריאת העולם על פי לוח השנה היהודי?", options: ["ה' באלול", "כ\"ה באלול", "ראש השנה", "סוכות"], correct: 2, difficulty: "hard" },
+            { question: "איזה נהר מפריד בין אסיה לאירופה?", options: ["הדנובה", "הוולגה", "הפרת", "האורל"], correct: 4, difficulty: "medium" },
+            { question: "מהי הציפור הלאומית של ישראל?", options: ["נשר", "דוכיפת", "בז", "אנפה"], correct: 2, difficulty: "easy" },
+            { question: "כמה עונות יש בשנה?", options: ["שלוש", "ארבע", "שתיים", "חמש"], correct: 2, difficulty: "easy" },
+            { question: "מהו תאריך יום השואה?", options: ["כ\"ז בניסן", "י\"ד באייר", "י\"ב בתמוז", "ט\"ו באב"], correct: 1, difficulty: "medium" },
+            { question: "באיזו שנה התרחש מבצע אנטבה?", options: ["1976", "1982", "1973", "1967"], correct: 1, difficulty: "medium" }
+
 
 
             // כאן ממשיכים עם שאר השאלות בהתאם
@@ -306,8 +355,8 @@
         function startQuiz() {
             const playerNames = document.getElementById('player-names').value.split(',').map(name => name.trim());
 
-            if (playerNames.length === 0) {
-                alert("אנא הכנס שמות שחקנים.");
+            if (playerNames.length === 0 || !selectedNumQuestions || !selectedDifficulty) {
+                alert("אנא בחר כמות שאלות, רמת קושי, והכנס שמות שחקנים.");
                 return;
             }
 
@@ -322,6 +371,51 @@
             selectedQuestions = questions.filter(q => difficulty === 'all' || q.difficulty === difficulty);
             selectedQuestions = selectedQuestions.sort(() => 0.5 - Math.random()).slice(0, numQuestions);
         }
+        let selectedNumQuestions = null;
+        let selectedDifficulty = null;
+
+        function setNumQuestions(value) {
+            numQuestions = value;
+            selectedNumQuestions = value;
+            updateButtonStates('num-questions', value);
+            checkStartButton();
+        }
+
+        function setDifficulty(value) {
+            difficulty = value;
+            selectedDifficulty = value;
+            updateButtonStates('difficulty', value);
+            checkStartButton();
+        }
+        function updateButtonStates(type, selectedValue) {
+            const buttons = document.querySelectorAll(`.button-group button[onclick^="set${type === 'num-questions' ? 'NumQuestions' : 'Difficulty'}"]`);
+            buttons.forEach(button => {
+                if (type === 'num-questions') {
+                    // For number of questions, we compare the exact number
+                    if (button.textContent.trim() === selectedValue + ' שאלות') {
+                        button.classList.add('selected');
+                    } else {
+                        button.classList.remove('selected');
+                    }
+                } else if (type === 'difficulty') {
+                    // For difficulty, we compare based on the difficulty value
+                    const buttonDifficulty = button.getAttribute('onclick').split("'")[1];
+                    if (buttonDifficulty === selectedValue) {
+                        button.classList.add('selected');
+                    } else {
+                        button.classList.remove('selected');
+                    }
+                }
+            });
+        }
+
+        function checkStartButton() {
+            const startButton = document.getElementById('start-quiz');
+            const playerNamesInput = document.getElementById('player-names');
+            startButton.disabled = !(selectedNumQuestions && selectedDifficulty && playerNamesInput.value.trim() !== '');
+        }
+
+        document.getElementById('player-names').addEventListener('input', checkStartButton);
 
         function showQuestion() {
             if (currentQuestionIndex < selectedQuestions.length) {
@@ -411,14 +505,14 @@
         function showReplayOptions() {
             const scoreReport = document.getElementById('score-report');
             const replayOptions = `
-                    <div class="replay-options">
-                        <h3>רוצים לשחק שוב?</h3>
-                        <div class="button-group">
-                            <button onclick="restartRound()">חזרה לסבב שחקנים נוכחי</button>
-                            <button onclick="returnToSetup()">חזרה לבחירת שחקנים</button>
+                        <div class="replay-options">
+                            <h3>רוצים לשחק שוב?</h3>
+                            <div class="button-group">
+                                <button onclick="restartRound()">חזרה לסבב שחקנים נוכחי</button>
+                                <button onclick="returnToSetup()">חזרה לבחירת שחקנים</button>
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
             scoreReport.innerHTML += replayOptions;
         }
 
