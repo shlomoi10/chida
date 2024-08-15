@@ -26,22 +26,14 @@
             margin-bottom: 30px;
         }
 
-        header h1 {
-            font-family: 'Alef', sans-serif;
-            font-size: 3em;
-            margin: 0;
-            color: #4527a0;
-        }
-svg {
-    width: 150;
-    height: 150px;
-    max-width: 100%;
-    max-height: 100%;
-    padding: 0;
-    margin: 0;
-}
+            header h1 {
+                font-family: 'Alef', sans-serif;
+                font-size: 3em;
+                margin: 0;
+                color: #4527a0;
+            }
 
-        .quiz-container {
+        .setup-container, .quiz-container, .score-report {
             background-color: #fff;
             padding: 20px;
             border-radius: 15px;
@@ -50,12 +42,12 @@ svg {
             text-align: center;
         }
 
-        .quiz-container h2 {
-            font-family: 'Alef', sans-serif;
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            color: #3e2723;
-        }
+            .setup-container h2, .quiz-container h2, .score-report h3 {
+                font-family: 'Alef', sans-serif;
+                font-size: 1.8em;
+                margin-bottom: 20px;
+                color: #3e2723;
+            }
 
         .question {
             font-family: 'Rubik', sans-serif;
@@ -76,25 +68,15 @@ svg {
             transition: background-color 0.3s;
         }
 
-        .options button:hover {
-            background-color: #5e35b1;
-        }
+            .options button:hover {
+                background-color: #5e35b1;
+            }
 
         .feedback {
             font-family: 'Rubik', sans-serif;
             font-size: 1.2em;
             margin-top: 20px;
             display: none;
-        }
-
-        .confetti {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 100;
         }
 
         .score-report {
@@ -106,23 +88,23 @@ svg {
             color: #4527a0;
         }
 
-        .score-report h3 {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
+            .score-report h3 {
+                font-size: 2em;
+                margin-bottom: 10px;
+            }
 
-        .score-report p {
-            font-size: 1.2em;
-            margin: 5px 0;
-        }
+            .score-report p {
+                font-size: 1.2em;
+                margin: 5px 0;
+            }
 
-        .score-report .summary {
-            background-color: #e0f7fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            text-align: left;
-        }
+            .score-report .summary {
+                background-color: #e0f7fa;
+                padding: 15px;
+                border-radius: 10px;
+                margin-top: 20px;
+                text-align: left;
+            }
 
         footer {
             margin-top: 30px;
@@ -131,51 +113,55 @@ svg {
             color: #311b92;
         }
 
-        footer p {
-            margin: 0;
-        }
-
-        .confetti-piece {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            top: 0;
-            opacity: 0.8;
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(100vh) rotate(360deg);
+            footer p {
+                margin: 0;
             }
-        }
     </style>
 </head>
 <body>
     <header>
-       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100" height="100" fill="#5e35b1">
-   <path d="M20.84 22.73l-2.12-2.12-2.12 2.12a1.5 1.5 0 01-2.12-2.12l2.12-2.12-2.12-2.12a1.5 1.5 0 012.12-2.12l2.12 2.12 2.12-2.12a1.5 1.5 0 012.12 2.12l-2.12 2.12 2.12 2.12a1.5 1.5 0 01-2.12 2.12zM5.16 1.27l2.12 2.12-2.12 2.12a1.5 1.5 0 002.12 2.12l2.12-2.12 2.12 2.12a1.5 1.5 0 002.12-2.12l-2.12-2.12 2.12-2.12a1.5 1.5 0 00-2.12-2.12l-2.12 2.12-2.12-2.12a1.5 1.5 0 00-2.12 2.12z"/>
-</svg>
-
-    <h1>חידונים מרתקים</h1>
+        <h1>חידונים מרתקים</h1>
     </header>
 
-    <div class="quiz-container">
-        <h2>מוכנים לאתגר?</h2>
-        <div class="question" id="question">
-            מהו המספר הבא בסדרה: 2, 4, 8, 16, ___?
-        </div>
-        <div class="options">
-            <button onclick="checkAnswer(1)">20</button>
-            <button onclick="checkAnswer(2)">32</button>
-            <button onclick="checkAnswer(3)">30</button>
-            <button onclick="checkAnswer(4)">24</button>
-        </div>
-        <div class="feedback" id="feedback"></div>
-        <div class="score-report" id="score-report"></div>
+    <div class="setup-container">
+        <h2>ברוכים הבאים לחידון המשפחתי!</h2>
+        <p>בחרו את מספר השאלות ואת רמת הקושי:</p>
+        <label for="num-questions">כמות שאלות:</label>
+        <select id="num-questions">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+        </select>
+        <br><br>
+        <label for="difficulty">רמת קושי:</label>
+        <select id="difficulty">
+            <option value="all">כל הרמות</option>
+            <option value="easy">קלה</option>
+            <option value="medium">בינונית</option>
+            <option value="hard">קשה</option>
+        </select>
+        <br><br>
+        <label for="player-names">שמות השחקנים (מופרדים בפסיק):</label>
+        <input type="text" id="player-names" placeholder="הכנס שמות...">
+        <br><br>
+        <button onclick="startQuiz()">התחל חידון</button>
     </div>
 
-    <div id="confetti" class="confetti"></div>
+    <div class="quiz-container" style="display: none;">
+        <h2>מוכנים לאתגר?</h2>
+        <div id="current-player" style="margin-bottom: 15px; font-weight: bold;"></div>
+        <div class="question" id="question">שאלה תופיע כאן...</div>
+        <div class="options">
+            <button onclick="checkAnswer(1)">אפשרות 1</button>
+            <button onclick="checkAnswer(2)">אפשרות 2</button>
+            <button onclick="checkAnswer(3)">אפשרות 3</button>
+            <button onclick="checkAnswer(4)">אפשרות 4</button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+    <div class="score-report" id="score-report"></div>
 
     <footer>
         <p>© 2024 כל הזכויות שמורות. חידונים מרתקים.</p>
@@ -183,138 +169,96 @@ svg {
 
     <script>
         const questions = [
-            {
-                question: "מהו המספר הבא בסדרה: 2, 4, 8, 16, ___?",
-                options: ["20", "32", "30", "24"],
-                correct: 2
-            },
-            {
-                question: "כמה צדדים יש למשושה?",
-                options: ["4", "5", "6", "8"],
-                correct: 3
-            },
-            {
-                question: "מי המציא את נורת החשמל?",
-                options: ["אדיסון", "ניקולה טסלה", "ג'יימס ווט", "אלברט איינשטיין"],
-                correct: 1
-            },
-            {
-                question: "באיזו מדינה נמצא מגדל אייפל?",
-                options: ["גרמניה", "ספרד", "צרפת", "איטליה"],
-                correct: 3
-            },
-            {
-                question: "איזה כוכב לכת ידוע בכינוי 'הכוכב האדום'?",
-                options: ["מאדים", "ונוס", "שבתאי", "צדק"],
-                correct: 1
-            },
-            {
-                question: "מהו היסוד הנפוץ ביותר ביקום?",
-                options: ["חמצן", "פחמן", "מימן", "הליום"],
-                correct: 3
-            },
-            {
-                question: "כמה שעות יש ביממה?",
-                options: ["12", "24", "48", "60"],
-                correct: 2
-            },
-            {
-                question: "איזה צבע יש לדובוני הגומי בטעם תות?",
-                options: ["אדום", "ירוק", "צהוב", "כחול"],
-                correct: 1
-            },
-            {
-                question: "באיזו שנה נחתו בני האדם לראשונה על הירח?",
-                options: ["1965", "1969", "1972", "1980"],
-                correct: 2
-            },
-            {
-                question: "מהי המדינה הגדולה ביותר בעולם מבחינת שטח?",
-                options: ["קנדה", "סין", "ארה\"ב", "רוסיה"],
-                correct: 4
-            }
+            { question: "מהי בירת צרפת?", options: ["לונדון", "ברלין", "פריז", "רומא"], correct: 3, difficulty: "easy" },
+            { question: "מי כתב את 'רומיאו ויוליה'?", options: ["צ'ארלס דיקנס", "ויליאם שייקספיר", "ג'יין אוסטן", "מארק טוויין"], correct: 2, difficulty: "easy" },
+            { question: "כמה צלעות יש במשושה?", options: ["5", "6", "7", "8"], correct: 2, difficulty: "easy" },
+            // כאן ממשיכים עם שאר השאלות בהתאם
         ];
 
-        let currentQuestion = 0;
-        let score = 0;
+        let currentQuestionIndex = 0;
+        let currentScore = 0;
+        let playerAnswers = [];
+        let selectedQuestions = [];
+        let players = [];
+        let currentPlayerIndex = 0;
 
-        function checkAnswer(option) {
-            const feedback = document.getElementById('feedback');
-            if (option === questions[currentQuestion].correct) {
-                feedback.textContent = "תשובה נכונה!";
-                feedback.style.color = "green";
-                score++;
-                if (currentQuestion === questions.length - 1) {
-                    generateScoreReport();
+        function startQuiz() {
+            const numQuestions = document.getElementById('num-questions').value;
+            const difficulty = document.getElementById('difficulty').value;
+            const playerNames = document.getElementById('player-names').value.split(',').map(name => name.trim());
+
+            if (playerNames.length === 0) {
+                alert("אנא הכנס שמות שחקנים.");
+                return;
+            }
+
+            players = playerNames.map(name => ({ name, score: 0 }));
+            filterQuestions(numQuestions, difficulty);
+            document.querySelector('.setup-container').style.display = 'none';
+            document.querySelector('.quiz-container').style.display = 'block';
+            showQuestion();
+        }
+
+        function filterQuestions(numQuestions, difficulty) {
+            selectedQuestions = questions.filter(q => difficulty === 'all' || q.difficulty === difficulty);
+            selectedQuestions = selectedQuestions.sort(() => 0.5 - Math.random()).slice(0, numQuestions);
+        }
+
+        function showQuestion() {
+            if (currentQuestionIndex < selectedQuestions.length) {
+                document.getElementById('current-player').textContent = `שחקן נוכחי: ${players[currentPlayerIndex].name}`;
+                const questionObj = selectedQuestions[currentQuestionIndex];
+                document.getElementById('question').textContent = questionObj.question;
+                const buttons = document.querySelectorAll('.options button');
+                buttons.forEach((button, index) => {
+                    button.textContent = questionObj.options[index];
+                    button.disabled = false;
+                });
+                document.getElementById('feedback').style.display = 'none';
+            } else {
+                if (currentPlayerIndex < players.length - 1) {
+                    currentPlayerIndex++;
+                    currentQuestionIndex = 0;
+                    showQuestion();
+                } else {
+                    showScore();
                 }
-            } else {
-                feedback.textContent = "תשובה שגויה!";
-                feedback.style.color = "red";
-            }
-
-            feedback.style.display = "block";
-            setTimeout(nextQuestion, 1000);
-        }
-
-        function nextQuestion() {
-            const feedback = document.getElementById('feedback');
-            feedback.style.display = "none";
-            currentQuestion++;
-            if (currentQuestion < questions.length) {
-                displayQuestion();
-            } else {
-                endQuiz();
             }
         }
 
-        function displayQuestion() {
-            const question = document.getElementById('question');
-            question.textContent = questions[currentQuestion].question;
-            const options = document.querySelectorAll('.options button');
-            options.forEach((button, index) => {
-                button.textContent = questions[currentQuestion].options[index];
+        function checkAnswer(selectedOption) {
+            const questionObj = selectedQuestions[currentQuestionIndex];
+            const correctOption = questionObj.correct;
+
+            if (selectedOption === correctOption) {
+                document.getElementById('feedback').textContent = "כל הכבוד! תשובה נכונה!";
+                document.getElementById('feedback').style.color = "green";
+                players[currentPlayerIndex].score++;
+            } else {
+                document.getElementById('feedback').textContent = `טעות! התשובה הנכונה היא: ${questionObj.options[correctOption - 1]}`;
+                document.getElementById('feedback').style.color = "red";
+            }
+
+            document.getElementById('feedback').style.display = 'block';
+            currentQuestionIndex++;
+
+            setTimeout(showQuestion, 2000);
+        }
+
+        function showScore() {
+            document.querySelector('.quiz-container').style.display = 'none';
+            document.querySelector('.score-report').style.display = 'block';
+
+            let scoreSummary = "<h3>תוצאת החידון</h3>";
+            players.forEach(player => {
+                scoreSummary += `<p>${player.name}: ${player.score} תשובות נכונות.</p>`;
             });
-        }
 
-        function generateScoreReport() {
-            const report = document.getElementById('score-report');
-            report.innerHTML = `
-                <h3>דוח ציונים</h3>
-                <p>שאלות נכונות: ${score} מתוך ${questions.length}</p>
-                <div class="summary">
-                    <h4>סיכום:</h4>
-                    <p>סיימת את כל החידות בהצלחה!</p>
-                    <p>הממוצע שלך היה ${Math.round((score / questions.length) * 100)}%.</p>
-                </div>
-            `;
-            report.style.display = "block";
-            triggerConfetti();
-        }
+            const winner = players.reduce((max, player) => max.score > player.score ? max : player);
+            scoreSummary += `<h3>הזוכה הוא: ${winner.name} עם ${winner.score} תשובות נכונות!</h3>`;
 
-        function endQuiz() {
-            const questionContainer = document.querySelector('.quiz-container');
-            questionContainer.style.display = "none";
-            generateScoreReport();
+            document.getElementById('score-report').innerHTML = scoreSummary;
         }
-
-        function triggerConfetti() {
-            const confettiContainer = document.getElementById('confetti');
-            for (let i = 0; i < 100; i++) {
-                const confettiPiece = document.createElement('div');
-                confettiPiece.classList.add('confetti-piece');
-                confettiPiece.style.backgroundColor = randomColor();
-                confettiPiece.style.left = `${Math.random() * 100}vw`;
-                confettiPiece.style.animationDuration = `${Math.random() * 3 + 2}s`;
-                confettiContainer.appendChild(confettiPiece);
-            }
-        }
-
-        function randomColor() {
-            const colors = ['#ff6f61', '#6b5b95', '#88b04b', '#f7cac9', '#92a8d1'];
-            return colors[Math.floor(Math.random() * colors.length)];
-        }
-
-        displayQuestion();
     </script>
 </body>
 </html>
