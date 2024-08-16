@@ -62,6 +62,7 @@
             justify-content: center;
             margin-bottom: 15px;
         }
+
             .button-group button.selected {
                 background-color: #4527a0;
                 box-shadow: 0 0 5px #7e57c2;
@@ -87,28 +88,29 @@
                 cursor: not-allowed;
             }
 
-            .button-group button {
-                font-family: 'Rubik', sans-serif;
-                background-color: #7e57c2;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                padding: 10px 20px;
-                margin: 5px;
-                cursor: pointer;
-                transition: background-color 0.3s, transform 0.1s;
-                flex-grow: 1;
-                flex-basis: 45%;
+        .button-group button {
+            font-family: 'Rubik', sans-serif;
+            background-color: #7e57c2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            flex-grow: 1;
+            flex-basis: 45%;
+        }
+
+            .button-group button:hover {
+                background-color: #5e35b1;
             }
 
-                .button-group button:hover {
-                    background-color: #5e35b1;
-                }
-                .button-group button.selected {
-                    background-color: #4527a0;
-                    transform: scale(1.05);
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-                }
+            .button-group button.selected {
+                background-color: #4527a0;
+                transform: scale(1.05);
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            }
 
         .options button {
             font-family: 'Rubik', sans-serif;
@@ -182,6 +184,7 @@
             footer p {
                 margin: 0;
             }
+
         #start-quiz {
             font-family: 'Rubik', sans-serif;
             font-size: 1.2em;
@@ -195,11 +198,15 @@
             transition: background-color 0.3s, transform 0.1s;
         }
 
-       
+
 
             #start-quiz:active {
                 transform: scale(0.98);
             }
+
+        selected {
+            background-color: #f0f0f0;
+        }
     </style>
 </head>
 <body>
@@ -225,7 +232,12 @@
         <label for="player-names">שמות השחקנים (מופרדים בפסיק):</label>
         <input type="text" id="player-names" placeholder="הכנס שמות..." style="font-family: 'Rubik', sans-serif;">
         <br><br>
-            <button id="start-quiz" onclick="startQuiz()" disabled>התחל חידון</button>
+        <div class="button-group" id="question-mode-group">
+            <button onclick="setQuestionMode(true)">שאלות מעורבבות</button>
+            <button onclick="setQuestionMode(false)">שאלות זהות</button>
+        </div>
+
+        <button id="start-quiz" onclick="startQuiz()" disabled>התחל חידון</button>
     </div>
 
     <div class="quiz-container" style="display: none;">
@@ -335,42 +347,14 @@
 
         let currentQuestionIndex = 0;
         let currentScore = 0;
-        let playerAnswers = [];
         let selectedQuestions = [];
         let players = [];
         let currentPlayerIndex = 0;
         let numQuestions = 5;
         let difficulty = 'all';
-
-        function setNumQuestions(value) {
-            numQuestions = value;
-        }
-
-        function setDifficulty(value) {
-            difficulty = value;
-        }
-
-        function startQuiz() {
-            const playerNames = document.getElementById('player-names').value.split(',').map(name => name.trim());
-
-            if (playerNames.length === 0 || !selectedNumQuestions || !selectedDifficulty) {
-                alert("אנא בחר כמות שאלות, רמת קושי, והכנס שמות שחקנים.");
-                return;
-            }
-
-            players = playerNames.map(name => ({ name, score: 0 }));
-            filterQuestions(numQuestions, difficulty);
-            document.querySelector('.setup-container').style.display = 'none';
-            document.querySelector('.quiz-container').style.display = 'block';
-            showQuestion();
-        }
-
-        function filterQuestions(numQuestions, difficulty) {
-            selectedQuestions = questions.filter(q => difficulty === 'all' || q.difficulty === difficulty);
-            selectedQuestions = selectedQuestions.sort(() => 0.5 - Math.random()).slice(0, numQuestions);
-        }
         let selectedNumQuestions = null;
         let selectedDifficulty = null;
+        let questionModeMixed = true; // מצב ברירת מחדל: שאלות מעורבבות
 
         function setNumQuestions(value) {
             numQuestions = value;
@@ -385,20 +369,66 @@
             updateButtonStates('difficulty', value);
             checkStartButton();
         }
+
+        function setQuestionMode(isMixed) {
+            questionModeMixed = isMixed;
+            updateButtonStates('question-mode', isMixed ? 'שאלות מעורבבות' : 'שאלות זהות');
+            checkStartButton(); // בדיקה מחדש של כפתור ההתחלה לאחר שינוי מצב שאלות
+        }
+
+        function startQuiz() {
+            const playerNames = document.getElementById('player-names').value.split(',').map(name => name.trim());
+
+            if (playerNames.length === 0 || !selectedNumQuestions || !selectedDifficulty) {
+                alert("אנא בחר כמות שאלות, רמת קושי, והכנס שמות שחקנים.");
+                return;
+            }
+
+            players = playerNames.map(name => ({ name, score: 0 }));
+
+            if (questionModeMixed) {
+                // שאלות מעורבבות לכל שחקן
+                players.forEach(player => {
+                    player.questions = filterQuestions(numQuestions, difficulty);
+                });
+            } else {
+                // שאלות זהות לכל השחקנים
+                selectedQuestions = filterQuestions(numQuestions, difficulty);
+            }
+
+            currentPlayerIndex = 0;
+            currentQuestionIndex = 0;
+            document.querySelector('.setup-container').style.display = 'none';
+            document.querySelector('.quiz-container').style.display = 'block';
+            showQuestion();
+        }
+
+        function filterQuestions(numQuestions, difficulty) {
+            const filteredQuestions = difficulty === 'all' ? questions :
+                questions.filter(q => q.difficulty === difficulty);
+
+            return filteredQuestions.sort(() => 0.5 - Math.random()).slice(0, numQuestions);
+        }
+
         function updateButtonStates(type, selectedValue) {
-            const buttons = document.querySelectorAll(`.button-group button[onclick^="set${type === 'num-questions' ? 'NumQuestions' : 'Difficulty'}"]`);
+            const buttons = document.querySelectorAll(`.button-group button[onclick^="set${type === 'num-questions' ? 'NumQuestions' : type === 'difficulty' ? 'Difficulty' : 'QuestionMode'}"]`);
             buttons.forEach(button => {
                 if (type === 'num-questions') {
-                    // For number of questions, we compare the exact number
                     if (button.textContent.trim() === selectedValue + ' שאלות') {
                         button.classList.add('selected');
                     } else {
                         button.classList.remove('selected');
                     }
                 } else if (type === 'difficulty') {
-                    // For difficulty, we compare based on the difficulty value
-                    const buttonDifficulty = button.getAttribute('onclick').split("'")[1];
-                    if (buttonDifficulty === selectedValue) {
+                    const buttonValue = button.getAttribute('onclick').split("'")[1];
+                    if (buttonValue === selectedValue) {
+                        button.classList.add('selected');
+                    } else {
+                        button.classList.remove('selected');
+                    }
+                } else if (type === 'question-mode') {
+                    if ((selectedValue === 'שאלות מעורבבות' && button.textContent.includes('שאלות מעורבבות')) ||
+                        (selectedValue === 'שאלות זהות' && button.textContent.includes('שאלות זהות'))) {
                         button.classList.add('selected');
                     } else {
                         button.classList.remove('selected');
@@ -416,9 +446,10 @@
         document.getElementById('player-names').addEventListener('input', checkStartButton);
 
         function showQuestion() {
-            if (currentQuestionIndex < selectedQuestions.length) {
-                document.getElementById('current-player').textContent = `שחקן נוכחי: ${players[currentPlayerIndex].name}`;
-                const questionObj = selectedQuestions[currentQuestionIndex];
+            if (currentQuestionIndex < numQuestions) {
+                const player = players[currentPlayerIndex];
+                document.getElementById('current-player').textContent = `שחקן נוכחי: ${player.name}`;
+                const questionObj = questionModeMixed ? player.questions[currentQuestionIndex] : selectedQuestions[currentQuestionIndex];
                 document.getElementById('question').textContent = questionObj.question;
                 const buttons = document.querySelectorAll('.options button');
                 buttons.forEach((button, index) => {
@@ -438,13 +469,14 @@
         }
 
         function checkAnswer(selectedOption) {
-            const questionObj = selectedQuestions[currentQuestionIndex];
+            const player = players[currentPlayerIndex];
+            const questionObj = questionModeMixed ? player.questions[currentQuestionIndex] : selectedQuestions[currentQuestionIndex];
             const correctOption = questionObj.correct;
 
             if (selectedOption === correctOption) {
                 document.getElementById('feedback').textContent = "כל הכבוד! תשובה נכונה!";
                 document.getElementById('feedback').style.color = "green";
-                players[currentPlayerIndex].score++;
+                player.score++;
             } else {
                 document.getElementById('feedback').textContent = `טעות! התשובה הנכונה היא: ${questionObj.options[correctOption - 1]}`;
                 document.getElementById('feedback').style.color = "red";
@@ -503,14 +535,14 @@
         function showReplayOptions() {
             const scoreReport = document.getElementById('score-report');
             const replayOptions = `
-                        <div class="replay-options">
-                            <h3>רוצים לשחק שוב?</h3>
-                            <div class="button-group">
-                                <button onclick="restartRound()">חזרה לסבב שחקנים נוכחי</button>
-                                <button onclick="returnToSetup()">חזרה לבחירת שחקנים</button>
-                            </div>
+                    <div class="replay-options">
+                        <h3>רוצים לשחק שוב?</h3>
+                        <div class="button-group">
+                            <button onclick="restartRound()">חזרה לסבב שחקנים נוכחי</button>
+                            <button onclick="returnToSetup()">חזרה לבחירת שחקנים</button>
                         </div>
-                    `;
+                    </div>
+                `;
             scoreReport.innerHTML += replayOptions;
         }
 
@@ -519,6 +551,11 @@
             currentQuestionIndex = 0;
             currentPlayerIndex = 0;
             players.forEach(player => player.score = 0);
+            if (questionModeMixed) {
+                players.forEach(player => {
+                    player.questions = filterQuestions(numQuestions, difficulty);
+                });
+            }
             document.querySelector('.score-report').style.display = 'none';
             document.querySelector('.quiz-container').style.display = 'block';
             showQuestion();
