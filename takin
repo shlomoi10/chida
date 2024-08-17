@@ -1,1 +1,578 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חידונים מרתקים</title>
+    <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f3e9;
+            color: #5e35b1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            direction: rtl;
+        }
 
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+            header h1 {
+                font-family: 'Alef', sans-serif;
+                font-size: 3em;
+                margin: 0;
+                color: #4527a0;
+            }
+
+        .setup-container, .quiz-container, .score-report {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            text-align: center;
+        }
+
+            .setup-container h2, .quiz-container h2, .score-report h3 {
+                font-family: 'Alef', sans-serif;
+                font-size: 1.8em;
+                margin-bottom: 20px;
+                color: #3e2723;
+            }
+
+        .question {
+            font-family: 'Rubik', sans-serif;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #3e2723;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+            .button-group button.selected {
+                background-color: #4527a0;
+                box-shadow: 0 0 5px #7e57c2;
+            }
+
+        #start-quiz {
+            background-color: #4527a0;
+            color: white;
+            font-size: 1.2em;
+            padding: 15px 30px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+            #start-quiz:hover {
+                background-color: #4527a0;
+                transform: scale(1.05);
+            }
+
+            #start-quiz:disabled {
+                background-color: #cccccc;
+                color: #666666;
+                cursor: not-allowed;
+            }
+
+        .button-group button {
+            font-family: 'Rubik', sans-serif;
+            background-color: #7e57c2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            flex-grow: 1;
+            flex-basis: 45%;
+        }
+
+            .button-group button:hover {
+                background-color: #5e35b1;
+            }
+
+            .button-group button.selected {
+                background-color: #4527a0;
+                transform: scale(1.05);
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            }
+
+        .options button {
+            font-family: 'Rubik', sans-serif;
+            background-color: #7e57c2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .options button:hover {
+                background-color: #5e35b1;
+            }
+
+        .feedback {
+            font-family: 'Rubik', sans-serif;
+            font-size: 1.2em;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .score-report {
+            display: none;
+            text-align: center;
+            font-family: 'Alef', sans-serif;
+            font-size: 1.5em;
+            margin-top: 20px;
+            color: #4527a0;
+            overflow-y: auto;
+            max-height: 60vh;
+        }
+
+            .score-report h3 {
+                font-size: 2em;
+                margin-bottom: 10px;
+            }
+
+            .score-report p {
+                font-size: 1.2em;
+                margin: 5px 0;
+            }
+
+            .score-report .summary {
+                background-color: #e0f7fa;
+                padding: 15px;
+                border-radius: 10px;
+                margin-top: 20px;
+                text-align: left;
+            }
+
+        .fireworks-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-family: 'Alef', sans-serif;
+            font-size: 0.9em;
+            color: #311b92;
+        }
+
+            footer p {
+                margin: 0;
+            }
+
+        #start-quiz {
+            font-family: 'Rubik', sans-serif;
+            font-size: 1.2em;
+            background-color: #7e57c2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 30px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+
+
+            #start-quiz:active {
+                transform: scale(0.98);
+            }
+
+        selected {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>חידונים מרתקים</h1>
+    </header>
+
+    <div class="setup-container">
+        <h2>ברוכים הבאים לחידון המשפחתי!</h2>
+        <p>בחרו את מספר השאלות ואת רמת הקושי:</p>
+        <div class="button-group" id="num-questions-group">
+            <button onclick="setNumQuestions(5)">5 שאלות</button>
+            <button onclick="setNumQuestions(10)">10 שאלות</button>
+            <button onclick="setNumQuestions(15)">15 שאלות</button>
+            <button onclick="setNumQuestions(20)">20 שאלות</button>
+        </div>
+        <div class="button-group">
+            <button onclick="setDifficulty('easy')">רמה קלה</button>
+            <button onclick="setDifficulty('medium')">רמה בינונית</button>
+            <button onclick="setDifficulty('hard')">רמה קשה</button>
+            <button onclick="setDifficulty('all')">כל הרמות</button>
+        </div>
+        <label for="player-names">שמות השחקנים (מופרדים בפסיק):</label>
+        <input type="text" id="player-names" placeholder="הכנס שמות..." style="font-family: 'Rubik', sans-serif;">
+        <br><br>
+        <div class="button-group" id="question-mode-group">
+            <button onclick="setQuestionMode(true)">שאלות מעורבבות</button>
+            <button onclick="setQuestionMode(false)">שאלות זהות</button>
+        </div>
+
+        <button id="start-quiz" onclick="startQuiz()" disabled>התחל חידון</button>
+    </div>
+
+    <div class="quiz-container" style="display: none;">
+        <h2>מוכנים לאתגר?</h2>
+        <div id="current-player" style="margin-bottom: 15px; font-weight: bold;"></div>
+        <div class="question" id="question">שאלה תופיע כאן...</div>
+        <div class="options">
+            <button onclick="checkAnswer(1)">אפשרות 1</button>
+            <button onclick="checkAnswer(2)">אפשרות 2</button>
+            <button onclick="checkAnswer(3)">אפשרות 3</button>
+            <button onclick="checkAnswer(4)">אפשרות 4</button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+    <div class="score-report" id="score-report"></div>
+
+    <div class="fireworks-container" id="fireworks-container"></div>
+
+    <footer>
+        <p>© 2024 כל הזכויות שמורות. חידונים מרתקים.</p>
+    </footer>
+
+    <script>
+        const questions = [
+            { question: "מהי בירת צרפת?", options: ["לונדון", "ברלין", "פריז", "רומא"], correct: 3, difficulty: "easy" },
+            { question: "כמה צלעות יש במשושה?", options: ["5", "6", "7", "8"], correct: 2, difficulty: "easy" },
+            { question: "מהו היסוד הכימי בעל מספר אטומי 1?", options: ["הליום", "פחמן", "חמצן", "מימן"], correct: 4, difficulty: "medium" },
+            { question: "באיזו שנה הסתיימה מלחמת העולם השנייה?", options: ["1943", "1944", "1945", "1946"], correct: 3, difficulty: "medium" },
+            { question: "מהו המרחק הממוצע בין כדור הארץ לשמש?", options: ["93 מיליון מייל", "150 מיליון קילומטר", "384,400 קילומטר", "299,792 קילומטר"], correct: 2, difficulty: "medium" },
+            { question: "איזה מהבאים אינו אחד מחוקי התנועה של ניוטון?", options: ["חוק ההתמדה", "חוק הכוח", "חוק הפעולה והתגובה", "חוק השימור האנרגיה"], correct: 4, difficulty: "hard" },
+            { question: "מי היה הנשיא הראשון של ארצות הברית?", options: ["תומאס ג'פרסון", "ג'ורג' וושינגטון", "ג'ון אדמס", "בנג'מין פרנקלין"], correct: 2, difficulty: "easy" },
+            { question: "איזה איבר בגוף האדם מייצר אינסולין?", options: ["כבד", "כליות", "לבלב", "טחול"], correct: 3, difficulty: "medium" },
+            { question: "מהו הנהר הארוך ביותר בעולם?", options: ["אמזונס", "נילוס", "יאנגצה", "מיסיסיפי"], correct: 2, difficulty: "medium" },
+            { question: "מהו שמו הכימי של מלח שולחן?", options: ["סודיום כלוריד", "סודיום ביקרבונט", "פוטסיום כלוריד", "מגנזיום סולפט"], correct: 1, difficulty: "medium" },
+            { question: "באיזו שנה נחתו בני אדם לראשונה על הירח?", options: ["1965", "1969", "1971", "1975"], correct: 2, difficulty: "medium" },
+            { question: "מהו המספר האטומי של פחמן?", options: ["4", "6", "8", "12"], correct: 2, difficulty: "hard" },
+            { question: "איזה מהבאים אינו כוכב לכת במערכת השמש?", options: ["נפטון", "אורנוס", "פלוטו", "שבתאי"], correct: 3, difficulty: "medium" },
+            { question: "מהי יחידת המדידה של עוצמת זרם חשמלי?", options: ["וולט", "ואט", "אמפר", "אוהם"], correct: 3, difficulty: "medium" },
+            { question: "מי היה הקיסר הראשון של רומא?", options: ["יוליוס קיסר", "אוגוסטוס", "נירון", "קלאודיוס"], correct: 2, difficulty: "hard" },
+            { question: "איזה חומר מהווה את רוב מסת היקום?", options: ["חומר אפל", "הידרוגן", "הליום", "אנרגיה אפלה"], correct: 1, difficulty: "hard" },
+            { question: "מהו המטבע הרשמי של יפן?", options: ["וון", "יואן", "ין", "רינגיט"], correct: 3, difficulty: "easy" },
+            { question: "מהו האיבר הגדול ביותר בגוף האדם?", options: ["מוח", "כבד", "עור", "ריאות"], correct: 3, difficulty: "medium" },
+            { question: "באיזו שנה הוכרזה מדינת ישראל?", options: ["1946", "1947", "1948", "1949"], correct: 3, difficulty: "easy" },
+            { question: "איזה נהר הוא הארוך ביותר בעולם?", options: ["הנילוס", "האמזונס", "הדנובה", "הגנגס"], correct: 2, difficulty: "medium" },
+            { question: "מהו שם הפרי שנחשב לסמל החקלאות בארץ ישראל?", options: ["תפוז", "תמר", "רימון", "זית"], correct: 4, difficulty: "medium" },
+            { question: "מהי המצווה הראשונה שניתנה בתורה?", options: ["שמירת השבת", "פרו ורבו", "כיבוד אב ואם", "לא תגנוב"], correct: 2, difficulty: "hard" },
+            { question: "איזו יבשת היא הגדולה ביותר בשטח?", options: ["אפריקה", "אסיה", "אמריקה הצפונית", "אירופה"], correct: 2, difficulty: "easy" },
+            { question: "איזו מצווה נקראת גם 'מצוות עשה שהזמן גרמא'?", options: ["שמירת שבת", "נרות חנוכה", "תפילין", "מזוזה"], correct: 3, difficulty: "medium" },
+            { question: "מהו ההר הגבוה ביותר בעולם?", options: ["האברסט", "קילימנג'רו", "אלברוס", "מקינלי"], correct: 1, difficulty: "easy" },
+            { question: "מי חיבר את ספר התניא?", options: ["הרמב\"ם", "האר\"י הקדוש", "הבעש\"ט", "האדמו\"ר הזקן"], correct: 4, difficulty: "hard" },
+            { question: "כמה ספרים יש בתורה?", options: ["חמשה", "ארבעה", "שבעה", "ששה"], correct: 1, difficulty: "easy" },
+            { question: "מהי המילה הראשונה בתורה?", options: ["במדבר", "בראשית", "ויקרא", "שמות"], correct: 2, difficulty: "easy" },
+            { question: "מהו השם השני של חג השבועות?", options: ["חג הביכורים", "חג האסיף", "חג המצות", "חג הסוכות"], correct: 1, difficulty: "medium" },
+            { question: "איזה פרח נבחר כסמל מדינת ישראל?", options: ["כלנית", "שושנה", "חבצלת", "צבר"], correct: 4, difficulty: "medium" },
+            { question: "מהי המדינה הגדולה ביותר בעולם בשטח?", options: ["קנדה", "רוסיה", "ארצות הברית", "סין"], correct: 2, difficulty: "easy" },
+            { question: "כמה מצוות לא תעשה יש בתורה?", options: ["365", "248", "613", "10"], correct: 1, difficulty: "hard" },
+            { question: "מהו ספר התורה הראשון?", options: ["בראשית", "שמות", "ויקרא", "דברים"], correct: 1, difficulty: "easy" },
+            { question: "איזה נביא נחשב למבשר הגאולה?", options: ["ישעיהו", "ירמיהו", "יחזקאל", "הושע"], correct: 1, difficulty: "hard" },
+            { question: "מהו פרק הזמן המינימלי שבין כל גידול פרי על פי הלכות שנת השמיטה?", options: ["שבוע", "חודש", "שנה", "שבע שנים"], correct: 3, difficulty: "medium" },
+            { question: "כמה ימים נמשכת ספירת העומר?", options: ["40", "49", "50", "33"], correct: 2, difficulty: "easy" },
+            { question: "באיזו פרשה נאמר הסיפור על עקידת יצחק?", options: ["פרשת נח", "פרשת וירא", "פרשת תולדות", "פרשת לך לך"], correct: 2, difficulty: "medium" },
+            { question: "איזה מהחגים הוא גם אחד משלושת הרגלים?", options: ["חנוכה", "שבועות", "פורים", "ראש השנה"], correct: 2, difficulty: "easy" },
+            { question: "מהו הים הגדול ביותר?", options: ["הים התיכון", "הים האדום", "הים הכספי", "הים השחור"], correct: 3, difficulty: "medium" },
+            { question: "כמה זמן נמשכה מגפת הארבה במצרים?", options: ["שבוע", "שבעה ימים", "חודש", "שלושה ימים"], correct: 4, difficulty: "hard" },
+            { question: "מהו פרק הזמן שנדרש לצום ביום הכיפורים?", options: ["24 שעות", "25 שעות", "26 שעות", "23 שעות"], correct: 2, difficulty: "easy" },
+            { question: "איזה ספר נחשב למקובל ביותר על פי תורת הקבלה?", options: ["ספר הזוהר", "ספר יצירה", "ספר הבהיר", "ספר עץ חיים"], correct: 1, difficulty: "hard" },
+            { question: "באיזה חודש חל פסח?", options: ["ניסן", "אדר", "תשרי", "סיוון"], correct: 1, difficulty: "easy" },
+            { question: "באיזה פרשה מופיעה מצוות הפרה האדומה?", options: ["פרשת חוקת", "פרשת וירא", "פרשת נח", "פרשת תולדות"], correct: 1, difficulty: "medium" },
+            { question: "מהי השנה היהודית בה התרחש חורבן בית המקדש השני?", options: ["70 לספירה", "120 לספירה", "586 לפנה\"ס", "3338 לבריאת העולם"], correct: 1, difficulty: "hard" },
+            { question: "באיזו שנה עברו בני ישראל את הירדן ונכנסו לארץ ישראל?", options: ["2488 לבריאת העולם", "2408 לבריאת העולם", "2448 לבריאת העולם", "2508 לבריאת העולם"], correct: 3, difficulty: "medium" },
+            { question: "כמה פעמים מוזכר השם 'משה' בתורה?", options: ["720", "540", "740", "600"], correct: 2, difficulty: "hard" },
+            { question: "מהו העץ הגבוה ביותר בעולם?", options: ["אורן", "דקל", "סקויה", "ארז"], correct: 3, difficulty: "medium" },
+            { question: "איזה יונק נחשב לגדול ביותר בעולם?", options: ["פיל אפריקאי", "לווייתן כחול", "גורילה", "קרנף"], correct: 2, difficulty: "easy" },
+            { question: "מהו הסמל הלאומי של מדינת ישראל?", options: ["מנורה", "מגן דוד", "צבר", "תל אביב"], correct: 1, difficulty: "easy" },
+            { question: "מי היה ראש ממשלת ישראל הראשון?", options: ["דוד בן-גוריון", "גולדה מאיר", "מנחם בגין", "יצחק רבין"], correct: 1, difficulty: "easy" },
+            { question: "איזו עיר נחשבת לעיר הקודש?", options: ["תל אביב", "ירושלים", "חברון", "צפת"], correct: 2, difficulty: "easy" },
+            { question: "מהי השנה בה ניתנה התורה בהר סיני?", options: ["2448 לבריאת העולם", "2508 לבריאת העולם", "1948 לבריאת העולם", "4000 לבריאת העולם"], correct: 1, difficulty: "medium" },
+            { question: "איזה סוג של עץ מייצר בלוטים?", options: ["אלון", "ארז", "ברוש", "זית"], correct: 1, difficulty: "easy" },
+            { question: "מהו שמה של העיר העתיקה של יבוס?", options: ["בית לחם", "חברון", "שכם", "ירושלים"], correct: 4, difficulty: "hard" },
+            { question: "באיזו שנה הוקמה מדינת ישראל?", options: ["1948", "1956", "1967", "1973"], correct: 1, difficulty: "easy" },
+            { question: "איזה סוג של עץ נחשב לקדוש ביהדות?", options: ["אלון", "זית", "תמר", "ברוש"], correct: 2, difficulty: "medium" },
+            { question: "מהו הים העמוק ביותר בעולם?", options: ["הים התיכון", "ים המלח", "הים האדום", "הים הקריבי"], correct: 2, difficulty: "medium" },
+            { question: "מי היה השליט הישראלי שהקים את בית המקדש הראשון?", options: ["דוד המלך", "שלמה המלך", "שאול המלך", "יהושע בן נון"], correct: 2, difficulty: "medium" },
+            { question: "איזה גוף מים נחשב לגדול ביותר בשטח?", options: ["הים התיכון", "הים השחור", "האוקיינוס השקט", "האגם הגדול"], correct: 3, difficulty: "easy" },
+            { question: "כמה רגליים יש לעכביש?", options: ["שש", "שמונה", "עשר", "שבע"], correct: 2, difficulty: "easy" },
+            { question: "מהי האבן היקרה ביותר?", options: ["יהלום", "אודם", "ברקת", "ספיר"], correct: 1, difficulty: "medium" },
+            { question: "איזה סוג של עץ מייצר פירות הדר?", options: ["לימון", "תפוז", "אשכולית", "כל התשובות נכונות"], correct: 4, difficulty: "easy" },
+            { question: "מהו המקום החם ביותר בכדור הארץ?", options: ["מדבר סהרה", "עמק המוות", "המדבר האוסטרלי", "אפריקה"], correct: 2, difficulty: "hard" },
+            { question: "מהו מקורו של נהר הנילוס?", options: ["אגם ויקטוריה", "הים התיכון", "אגם צ'אד", "הרי אתיופיה"], correct: 1, difficulty: "medium" },
+            { question: "באיזו שנה נבנה הכותל המערבי?", options: ["70 לספירה", "150 לספירה", "586 לפנה\"ס", "335 לפנה\"ס"], correct: 1, difficulty: "hard" },
+            { question: "איזה סוג של חיה הוא הדולפין?", options: ["יונק", "דג", "זוחל", "דו-חיים"], correct: 1, difficulty: "easy" },
+            { question: "מהו גובהו של הר החרמון?", options: ["2224 מטר", "2814 מטר", "1208 מטר", "1965 מטר"], correct: 1, difficulty: "medium" },
+            { question: "איזה עץ מופיע במשל יותם?", options: ["זית", "אשל", "ארז", "תאנה"], correct: 1, difficulty: "medium" },
+            { question: "איזה סוג של חרק יוצר דבש?", options: ["דבורה", "צרצר", "חגב", "פרפר"], correct: 1, difficulty: "easy" },
+            { question: "מהי בריאת העולם על פי לוח השנה היהודי?", options: ["ה' באלול", "כ\"ה באלול", "ראש השנה", "סוכות"], correct: 2, difficulty: "hard" },
+            { question: "איזה נהר מפריד בין אסיה לאירופה?", options: ["הדנובה", "הוולגה", "הפרת", "האורל"], correct: 4, difficulty: "medium" },
+            { question: "מהי הציפור הלאומית של ישראל?", options: ["נשר", "דוכיפת", "בז", "אנפה"], correct: 2, difficulty: "easy" },
+            { question: "כמה עונות יש בשנה?", options: ["שלוש", "ארבע", "שתיים", "חמש"], correct: 2, difficulty: "easy" },
+            { question: "מהו תאריך יום השואה?", options: ["כ\"ז בניסן", "י\"ד באייר", "י\"ב בתמוז", "ט\"ו באב"], correct: 1, difficulty: "medium" },
+            { question: "באיזו שנה התרחש מבצע אנטבה?", options: ["1976", "1982", "1973", "1967"], correct: 1, difficulty: "medium" }
+
+
+
+            // כאן ממשיכים עם שאר השאלות בהתאם
+        ];
+
+        let currentQuestionIndex = 0;
+        let currentScore = 0;
+        let selectedQuestions = [];
+        let players = [];
+        let currentPlayerIndex = 0;
+        let numQuestions = 5;
+        let difficulty = 'all';
+        let selectedNumQuestions = null;
+        let selectedDifficulty = null;
+        let questionModeMixed = true; // מצב ברירת מחדל: שאלות מעורבבות
+
+        function setNumQuestions(value) {
+            numQuestions = value;
+            selectedNumQuestions = value;
+            updateButtonStates('num-questions', value);
+            checkStartButton();
+        }
+
+        function setDifficulty(value) {
+            difficulty = value;
+            selectedDifficulty = value;
+            updateButtonStates('difficulty', value);
+            checkStartButton();
+        }
+
+        function setQuestionMode(isMixed) {
+            questionModeMixed = isMixed;
+            updateButtonStates('question-mode', isMixed ? 'שאלות מעורבבות' : 'שאלות זהות');
+            checkStartButton(); // בדיקה מחדש של כפתור ההתחלה לאחר שינוי מצב שאלות
+        }
+
+        function startQuiz() {
+            const playerNames = document.getElementById('player-names').value.split(',').map(name => name.trim());
+
+            if (playerNames.length === 0 || !selectedNumQuestions || !selectedDifficulty) {
+                alert("אנא בחר כמות שאלות, רמת קושי, והכנס שמות שחקנים.");
+                return;
+            }
+
+            players = playerNames.map(name => ({ name, score: 0 }));
+
+            if (questionModeMixed) {
+                // שאלות מעורבבות לכל שחקן
+                players.forEach(player => {
+                    player.questions = filterQuestions(numQuestions, difficulty);
+                });
+            } else {
+                // שאלות זהות לכל השחקנים
+                selectedQuestions = filterQuestions(numQuestions, difficulty);
+            }
+
+            currentPlayerIndex = 0;
+            currentQuestionIndex = 0;
+            document.querySelector('.setup-container').style.display = 'none';
+            document.querySelector('.quiz-container').style.display = 'block';
+            showQuestion();
+        }
+
+        function filterQuestions(numQuestions, difficulty) {
+            const filteredQuestions = difficulty === 'all' ? questions :
+                questions.filter(q => q.difficulty === difficulty);
+
+            return filteredQuestions.sort(() => 0.5 - Math.random()).slice(0, numQuestions);
+        }
+
+        function updateButtonStates(type, selectedValue) {
+            const buttons = document.querySelectorAll(`.button-group button[onclick^="set${type === 'num-questions' ? 'NumQuestions' : type === 'difficulty' ? 'Difficulty' : 'QuestionMode'}"]`);
+            buttons.forEach(button => {
+                if (type === 'num-questions') {
+                    if (button.textContent.trim() === selectedValue + ' שאלות') {
+                        button.classList.add('selected');
+                    } else {
+                        button.classList.remove('selected');
+                    }
+                } else if (type === 'difficulty') {
+                    const buttonValue = button.getAttribute('onclick').split("'")[1];
+                    if (buttonValue === selectedValue) {
+                        button.classList.add('selected');
+                    } else {
+                        button.classList.remove('selected');
+                    }
+                } else if (type === 'question-mode') {
+                    if ((selectedValue === 'שאלות מעורבבות' && button.textContent.includes('שאלות מעורבבות')) ||
+                        (selectedValue === 'שאלות זהות' && button.textContent.includes('שאלות זהות'))) {
+                        button.classList.add('selected');
+                    } else {
+                        button.classList.remove('selected');
+                    }
+                }
+            });
+        }
+
+        function checkStartButton() {
+            const startButton = document.getElementById('start-quiz');
+            const playerNamesInput = document.getElementById('player-names');
+            startButton.disabled = !(selectedNumQuestions && selectedDifficulty && playerNamesInput.value.trim() !== '');
+        }
+
+        document.getElementById('player-names').addEventListener('input', checkStartButton);
+
+        function showQuestion() {
+            if (currentQuestionIndex < numQuestions) {
+                const player = players[currentPlayerIndex];
+                document.getElementById('current-player').textContent = `שחקן נוכחי: ${player.name}`;
+                const questionObj = questionModeMixed ? player.questions[currentQuestionIndex] : selectedQuestions[currentQuestionIndex];
+                document.getElementById('question').textContent = questionObj.question;
+                const buttons = document.querySelectorAll('.options button');
+                buttons.forEach((button, index) => {
+                    button.textContent = questionObj.options[index];
+                    button.disabled = false;
+                });
+                document.getElementById('feedback').style.display = 'none';
+            } else {
+                if (currentPlayerIndex < players.length - 1) {
+                    currentPlayerIndex++;
+                    currentQuestionIndex = 0;
+                    showQuestion();
+                } else {
+                    showScore();
+                }
+            }
+        }
+
+        function checkAnswer(selectedOption) {
+            const player = players[currentPlayerIndex];
+            const questionObj = questionModeMixed ? player.questions[currentQuestionIndex] : selectedQuestions[currentQuestionIndex];
+            const correctOption = questionObj.correct;
+
+            if (selectedOption === correctOption) {
+                document.getElementById('feedback').textContent = "כל הכבוד! תשובה נכונה!";
+                document.getElementById('feedback').style.color = "green";
+                player.score++;
+            } else {
+                document.getElementById('feedback').textContent = `טעות! התשובה הנכונה היא: ${questionObj.options[correctOption - 1]}`;
+                document.getElementById('feedback').style.color = "red";
+            }
+
+            document.getElementById('feedback').style.display = 'block';
+            currentQuestionIndex++;
+
+            setTimeout(showQuestion, 2000);
+        }
+
+        function showScore() {
+            document.querySelector('.quiz-container').style.display = 'none';
+            document.querySelector('.score-report').style.display = 'block';
+
+            let scoreSummary = "<h3>תוצאת החידון</h3>";
+            players.forEach(player => {
+                scoreSummary += `<p>${player.name}: ${player.score} תשובות נכונות.</p>`;
+            });
+
+            const winner = players.reduce((max, player) => max.score > player.score ? max : player);
+            scoreSummary += `<h3>הזוכה הוא: ${winner.name} עם ${winner.score} תשובות נכונות!</h3>`;
+
+            document.getElementById('score-report').innerHTML = scoreSummary;
+
+            startFireworks();
+
+            setTimeout(() => {
+                showReplayOptions();
+            }, 5000);
+        }
+
+        function startFireworks() {
+            const container = document.getElementById('fireworks-container');
+            container.innerHTML = ''; // Reset fireworks
+
+            for (let i = 0; i < 10; i++) {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.position = 'absolute';
+                firework.style.width = '5px';
+                firework.style.height = '5px';
+                firework.style.background = 'radial-gradient(circle, white, transparent)';
+                firework.style.borderRadius = '50%';
+                firework.style.animation = `firework 1.5s ease-out ${i * 0.1}s infinite`;
+
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                firework.style.left = `${x}%`;
+                firework.style.top = `${y}%`;
+
+                container.appendChild(firework);
+            }
+        }
+
+        function showReplayOptions() {
+            const scoreReport = document.getElementById('score-report');
+            const replayOptions = `
+                    <div class="replay-options">
+                        <h3>רוצים לשחק שוב?</h3>
+                        <div class="button-group">
+                            <button onclick="restartRound()">חזרה לסבב שחקנים נוכחי</button>
+                            <button onclick="returnToSetup()">חזרה לבחירת שחקנים</button>
+                        </div>
+                    </div>
+                `;
+            scoreReport.innerHTML += replayOptions;
+        }
+
+        function restartRound() {
+            stopFireworks();
+            currentQuestionIndex = 0;
+            currentPlayerIndex = 0;
+            players.forEach(player => player.score = 0);
+            if (questionModeMixed) {
+                players.forEach(player => {
+                    player.questions = filterQuestions(numQuestions, difficulty);
+                });
+            }
+            document.querySelector('.score-report').style.display = 'none';
+            document.querySelector('.quiz-container').style.display = 'block';
+            showQuestion();
+        }
+
+        function returnToSetup() {
+            stopFireworks();
+            currentQuestionIndex = 0;
+            currentPlayerIndex = 0;
+            players.forEach(player => player.score = 0);
+            document.querySelector('.score-report').style.display = 'none';
+            document.querySelector('.setup-container').style.display = 'block';
+        }
+
+        function stopFireworks() {
+            document.getElementById('fireworks-container').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
