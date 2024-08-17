@@ -262,21 +262,14 @@
     </footer>
 
     <script>
-       fetch('https://raw.githubusercontent.com/shlomoi10/chida/main/chidot.html')
-  .then(response => response.text())
-  .then(data => {
-    // יצירת אלמנט זמני לטעינת הקוד מהקובץ
-    const tempElement = document.createElement('div');
-    tempElement.innerHTML = data;
+      fetch('https://raw.githubusercontent.com/shlomoi10/chida/main/chidot.html')
+    .then(response => response.json())
+    .then(data => {
+        questions = data;
+        console.log(questions);
+    })
+    .catch(error => console.error('Error loading questions:', error));
 
-    // קבלת מערך החידות
-    const script = tempElement.querySelector('script');
-    eval(script.innerText);
-
-    // כעת questions מכיל את מערך החידות וניתן להשתמש בו באתר
-    console.log(questions);
-  })
-  .catch(error => console.error('Error loading questions:', error));
 
         let currentQuestionIndex = 0;
         let currentScore = 0;
